@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GreenPay</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f4faf6;
+    color:#173b2a;
+}
+
+#loginPage{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.login{
+    width:100%;
+    max-width:390px;
+    background:white;
+    padding:35px 28px;
+    border-radius:26px;
+    text-align:center;
+    box-shadow:0 15px 45px rgba(30,90,55,.12);
+}
+
+.logo{
+    width:68px;
+    height:68px;
+    margin:auto;
+    border-radius:21px;
+    background:#dff5e7;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:32px;
+}
+
+.login h1{margin-top:15px;font-size:27px}
+.login p{color:#809188;margin:9px 0 25px}
+
+input{
+    width:100%;
+    padding:15px;
+    border:1px solid #dce9e1;
+    border-radius:13px;
+    outline:none;
+    font-size:16px;
+    margin-bottom:12px;
+}
+
+input:focus{border-color:#69bd87}
+
+button{
+    border:none;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.primary{
+    width:100%;
+    padding:15px;
+    border-radius:13px;
+    background:#69bd87;
+    color:white;
+    font-size:16px;
+}
+
+/* APP */
+
+#app{
+    display:none;
+    min-height:100vh;
+}
+
+header{
+    height:72px;
+    background:white;
+    border-bottom:1px solid #e3eee7;
+    padding:0 6%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:20px;
+    font-weight:bold;
+}
+
+.brandIcon{
+    width:40px;
+    height:40px;
+    border-radius:13px;
+    background:#dff5e7;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.headerRight{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.avatar{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#69bd87;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+}
+
+/* CONTENT */
+
+.container{
+    max-width:1050px;
+    margin:auto;
+    padding:30px 20px;
+}
+
+.welcome{margin-bottom:22px}
+.welcome h2{font-size:27px}
+.welcome p{margin-top:6px;color:#809188}
+
+/* BALANCE */
+
+.balance{
+    background:linear-gradient(135deg,#7dcc98,#4eaf73);
+    color:white;
+    padding:28px;
+    border-radius:25px;
+    box-shadow:0 15px 35px rgba(65,150,90,.2);
+    position:relative;
+    overflow:hidden;
+}
+
+.balance:after{
+    content:"";
+    position:absolute;
+    width:190px;
+    height:190px;
+    border-radius:50%;
+    background:rgba(255,255,255,.1);
+    right:-70px;
+    top:-80px;
+}
+
+.balanceLabel{font-size:13px;opacity:.85}
+
+.money{
+    font-size:40px;
+    font-weight:bold;
+    margin:12px 0 20px;
+}
+
+.account{font-size:13px;opacity:.85}
+
+/* MENU */
+
+.menu{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    margin:22px 0 30px;
+}
+
+.menuItem{
+    background:white;
+    border:1px solid #e1eee6;
+    border-radius:18px;
+    padding:20px;
+    cursor:pointer;
+    text-align:left;
+    box-shadow:0 7px 20px rgba(30,90,50,.05);
+    transition:.2s;
+}
+
+.menuItem:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(30,90,50,.09);
+}
+
+.menuIcon{font-size:27px;margin-bottom:10px}
+.menuTitle{font-weight:bold}
+.menuDesc{color:#87968d;font-size:13px;margin-top:5px}
+
+/* HISTORY */
+
+.title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.title h3{font-size:20px}
+
+.clear{
+    background:none;
+    color:#7c8982;
+}
+
+.transactions{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.transaction{
+    background:white;
+    border:1px solid #e4eee8;
+    border-radius:17px;
+    padding:16px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.left{
+    display:flex;
+    align-items:center;
+    gap:13px;
+}
+
+.icon{
+    width:44px;
+    height:44px;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    flex-shrink:0;
+}
+
+.in{background:#e0f6e7}
+.out{background:#fff0ee}
+
+.note{font-weight:bold}
+
+.time{
+    color:#94a198;
+    font-size:12px;
+    margin-top:4px;
+}
+
+.plus{color:#45a968;font-weight:bold}
+.minus{color:#df6b62;font-weight:bold}
+
+.empty{
+    background:white;
+    padding:35px;
+    border-radius:17px;
+    text-align:center;
+    color:#92a098;
+}
+
+/* PAGES */
+
+.page{display:none}
+.page.active{display:block}
+
+.back{
+    background:white;
+    padding:11px 15px;
+    border-radius:11px;
+    color:#39734e;
+    margin-bottom:18px;
+}
+
+/* MANAGE */
+
+.manageCard{
+    background:white;
+    border:1px solid #e1eee6;
+    border-radius:22px;
+    padding:25px;
+    margin-bottom:15px;
+}
+
+.manageCard h3{margin-bottom:8px}
+
+.manageCard p{
+    color:#819188;
+    font-size:14px;
+    margin-bottom:20px;
+}
+
+.manageButtons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.manageBtn{
+    padding:17px;
+    border-radius:14px;
+    font-size:15px;
+}
+
+.add{
+    background:#e1f6e8;
+    color:#328351;
+}
+
+.subtract{
+    background:#fff0ee;
+    color:#cf625a;
+}
+
+/* TRANSFER */
+
+.transferCard{
+    background:white;
+    border:1px solid #e1eee6;
+    border-radius:22px;
+    padding:25px;
+    max-width:600px;
+}
+
+.transferCard h2{
+    margin-bottom:7px;
+}
+
+.transferCard p{
+    color:#819188;
+    font-size:14px;
+    margin-bottom:22px;
+}
+
+.fieldLabel{
+    display:block;
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:7px;
+    color:#486052;
+}
+
+.transferInput{
+    margin-bottom:17px;
+}
+
+.transferAmount{
+    position:relative;
+}
+
+.transferAmount input{
+    padding-right:45px;
+}
+
+.currency{
+    position:absolute;
+    right:15px;
+    top:15px;
+    color:#789184;
+    font-weight:bold;
+}
+
+.transferBtn{
+    width:100%;
+    padding:16px;
+    border-radius:14px;
+    background:#69bd87;
+    color:white;
+    font-size:16px;
+    margin-top:5px;
+}
+
+.transferBtn:hover{
+    background:#58ad76;
+}
+
+.currentBalance{
+    background:#f1faf4;
+    padding:14px;
+    border-radius:13px;
+    margin-bottom:20px;
+    display:flex;
+    justify-content:space-between;
+}
+
+.currentBalance span:last-child{
+    font-weight:bold;
+    color:#39915a;
+}
+
+/* MODAL */
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(20,40,28,.38);
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:20;
+}
+
+.modalBox{
+    width:100%;
+    max-width:400px;
+    background:white;
+    padding:25px;
+    border-radius:23px;
+}
+
+.modalBox h3{margin-bottom:18px}
+
+.modalButtons{
+    display:flex;
+    gap:10px;
+}
+
+.modalButtons button{
+    flex:1;
+    padding:13px;
+    border-radius:12px;
+}
+
+.cancel{background:#edf1ee}
+.confirm{background:#69bd87;color:white}
+
+/* TOAST */
+
+.toastBox{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    z-index:50;
+}
+
+.toast{
+    min-width:260px;
+    background:white;
+    padding:15px 18px;
+    border-radius:15px;
+    border-left:5px solid #69bd87;
+    box-shadow:0 10px 30px rgba(0,0,0,.13);
+    animation:show .3s ease;
+}
+
+.toast strong{
+    display:block;
+    margin-bottom:4px;
+}
+
+.toast small{color:#789184}
+
+@keyframes show{
+    from{
+        transform:translateX(100px);
+        opacity:0;
+    }
+    to{
+        transform:translateX(0);
+        opacity:1;
+    }
+}
+
+/* MOBILE */
+
+@media(max-width:650px){
+
+    header{padding:0 15px}
+
+    .container{padding:22px 15px}
+
+    .userName{display:none}
+
+    .menu{
+        grid-template-columns:1fr;
+    }
+
+    .money{font-size:31px}
+
+    .manageButtons{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .transaction{
+        gap:10px;
+    }
+
+    .transaction > div:last-child{
+        text-align:right;
+        font-size:14px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<div id="loginPage">
+
+    <div class="login">
+
+        <div class="logo">🌿</div>
+
+        <h1>GreenPay</h1>
+
+        <p>Quản lý tài khoản của bạn</p>
+
+        <input
+            id="nameInput"
+            type="text"
+            maxlength="30"
+            placeholder="Nhập tên của bạn"
+        >
+
+        <button
+            class="primary"
+            onclick="login()">
+            Tiếp tục
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- APP -->
+
+<div id="app">
+
+<header>
+
+    <div class="brand">
+
+        <div class="brandIcon">🌿</div>
+
+        GreenPay
+
+    </div>
+
+    <div class="headerRight">
+
+        <span
+            class="userName"
+            id="headerName">
+        </span>
+
+        <div
+            class="avatar"
+            id="avatar">
+        </div>
+
+    </div>
+
+</header>
+
+
+<div class="container">
+
+    <!-- HOME -->
+
+    <div
+        id="homePage"
+        class="page active">
+
+        <div class="welcome">
+
+            <h2>
+                Xin chào,
+                <span id="welcomeName"></span> 👋
+            </h2>
+
+            <p>Tổng quan tài khoản</p>
+
+        </div>
+
+
+        <div class="balance">
+
+            <div class="balanceLabel">
+                SỐ DƯ
+            </div>
+
+            <div
+                class="money"
+                id="balance">
+                0 ₫
+            </div>
+
+            <div class="account">
+                Số tài khoản:
+                <span id="accountNumber"></span>
+            </div>
+
+        </div>
+
+
+        <!-- MENU -->
+
+        <div class="menu">
+
+            <div
+                class="menuItem"
+                onclick="openTransfer()">
+
+                <div class="menuIcon">💸</div>
+
+                <div class="menuTitle">
+                    Chuyển tiền
+                </div>
+
+                <div class="menuDesc">
+                    Chuyển tiền đến tài khoản
+                </div>
+
+            </div>
+
+
+            <div
+                class="menuItem"
+                onclick="openManage()">
+
+                <div class="menuIcon">⚙️</div>
+
+                <div class="menuTitle">
+                    Quản lý tài khoản
+                </div>
+
+                <div class="menuDesc">
+                    Quản lý số dư
+                </div>
+
+            </div>
+
+
+            <div
+                class="menuItem"
+                onclick="scrollHistory()">
+
+                <div class="menuIcon">📊</div>
+
+                <div class="menuTitle">
+                    Biến động số dư
+                </div>
+
+                <div class="menuDesc">
+                    Xem lịch sử
+                </div>
+
+            </div>
+
+
+            <div
+                class="menuItem"
+                onclick="logout()">
+
+                <div class="menuIcon">🚪</div>
+
+                <div class="menuTitle">
+                    Đăng xuất
+                </div>
+
+                <div class="menuDesc">
+                    Thoát tài khoản
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- HISTORY -->
+
+        <div id="history">
+
+            <div class="title">
+
+                <h3>Biến động số dư</h3>
+
+                <button
+                    class="clear"
+                    onclick="clearHistory()">
+                    Xóa
+                </button>
+
+            </div>
+
+            <div
+                class="transactions"
+                id="transactions">
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TRANSFER PAGE -->
+
+    <div
+        id="transferPage"
+        class="page">
+
+        <button
+            class="back"
+            onclick="goHome()">
+            ← Quay lại
+        </button>
+
+
+        <div class="transferCard">
+
+            <h2>💸 Chuyển tiền</h2>
+
+            <p>
+                Nhập thông tin người nhận và số tiền cần chuyển.
+            </p>
+
+
+            <div class="currentBalance">
+
+                <span>Số dư hiện tại</span>
+
+                <span id="transferBalance">
+                    0 ₫
+                </span>
+
+            </div>
+
+
+            <label class="fieldLabel">
+                Tên người nhận
+            </label>
+
+            <input
+                id="recipientName"
+                class="transferInput"
+                type="text"
+                maxlength="40"
+                placeholder="Nhập tên người nhận"
+            >
+
+
+            <label class="fieldLabel">
+                Số tài khoản
+            </label>
+
+            <input
+                id="recipientAccount"
+                class="transferInput"
+                type="text"
+                inputmode="numeric"
+                maxlength="20"
+                placeholder="Nhập số tài khoản"
+            >
+
+
+            <label class="fieldLabel">
+                Số tiền
+            </label>
+
+            <div class="transferAmount">
+
+                <input
+                    id="transferAmount"
+                    type="number"
+                    min="1"
+                    step="1"
+                    placeholder="Nhập số tiền"
+                >
+
+                <span class="currency">₫</span>
+
+            </div>
+
+
+            <label class="fieldLabel">
+                Nội dung
+            </label>
+
+            <input
+                id="transferNote"
+                type="text"
+                maxlength="60"
+                placeholder="Nội dung chuyển tiền"
+            >
+
+
+            <button
+                class="transferBtn"
+                onclick="openTransferConfirm()">
+                Chuyển tiền
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- MANAGE PAGE -->
+
+    <div
+        id="managePage"
+        class="page">
+
+        <button
+            class="back"
+            onclick="goHome()">
+            ← Quay lại
+        </button>
+
+
+        <div class="manageCard">
+
+            <h3>Quản lý tài khoản</h3>
+
+            <p>Thay đổi số dư tài khoản</p>
+
+            <div class="manageButtons">
+
+                <button
+                    class="manageBtn add"
+                    onclick="openModal('add')">
+                    ➕ Cộng tiền
+                </button>
+
+                <button
+                    class="manageBtn subtract"
+                    onclick="openModal('subtract')">
+                    ➖ Trừ tiền
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="manageCard">
+
+            <h3>Số dư hiện tại</h3>
+
+            <div
+                class="money"
+                id="manageBalance">
+                0 ₫
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<!-- ADD / SUBTRACT MODAL -->
+
+<div
+    class="modal"
+    id="modal">
+
+    <div class="modalBox">
+
+        <h3 id="modalTitle">
+            Cộng tiền
+        </h3>
+
+        <input
+            id="amount"
+            type="number"
+            min="1"
+            placeholder="Nhập số tiền VND"
+        >
+
+        <input
+            id="note"
+            type="text"
+            maxlength="50"
+            placeholder="Nội dung"
+        >
+
+        <div class="modalButtons">
+
+            <button
+                class="cancel"
+                onclick="closeModal()">
+                Hủy
+            </button>
+
+            <button
+                class="confirm"
+                onclick="process()">
+                Xác nhận
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- TRANSFER CONFIRM MODAL -->
+
+<div
+    class="modal"
+    id="transferConfirmModal">
+
+    <div class="modalBox">
+
+        <h3>💸 Xác nhận chuyển tiền</h3>
+
+        <div
+            id="transferConfirmText"
+            style="
+                background:#f3faf5;
+                padding:16px;
+                border-radius:14px;
+                line-height:1.7;
+                margin-bottom:18px;
+            ">
+        </div>
+
+        <div class="modalButtons">
+
+            <button
+                class="cancel"
+                onclick="closeTransferConfirm()">
+                Hủy
+            </button>
+
+            <button
+                class="confirm"
+                onclick="processTransfer()">
+                Xác nhận
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div
+    class="toastBox"
+    id="toastBox">
+</div>
+
+
+<script>
+
+let currentUser = "";
+let type = "add";
+
+
+/* LOGIN */
+
+function login(){
+
+    const name =
+        document
+        .getElementById("nameInput")
+        .value.trim();
+
+    if(!name){
+
+        toast(
+            "⚠️ Thiếu thông tin",
+            "Hãy nhập tên của bạn."
+        );
+
+        return;
+    }
+
+    currentUser = name;
+
+    localStorage.setItem(
+        "greenpay_user",
+        name
+    );
+
+    if(!localStorage.getItem("greenpay_balance")){
+
+        localStorage.setItem(
+            "greenpay_balance",
+            "0"
+        );
+    }
+
+    if(!localStorage.getItem("greenpay_transactions")){
+
+        localStorage.setItem(
+            "greenpay_transactions",
+            "[]"
+        );
+    }
+
+    showApp();
+}
+
+
+/* SHOW APP */
+
+function showApp(){
+
+    document.getElementById("loginPage").style.display="none";
+    document.getElementById("app").style.display="block";
+
+    document.getElementById("welcomeName").textContent=currentUser;
+    document.getElementById("headerName").textContent=currentUser;
+
+    document.getElementById("avatar").textContent =
+        currentUser.charAt(0).toUpperCase();
+
+    generateAccount();
+    updateBalance();
+    render();
+}
+
+
+/* ACCOUNT */
+
+function generateAccount(){
+
+    let account =
+        localStorage.getItem("greenpay_account");
+
+    if(!account){
+
+        account =
+            Math.floor(
+                1000000000 +
+                Math.random() * 9000000000
+            );
+
+        localStorage.setItem(
+            "greenpay_account",
+            account
+        );
+    }
+
+    document
+        .getElementById("accountNumber")
+        .textContent=account;
+}
+
+
+/* BALANCE */
+
+function getBalance(){
+
+    return Number(
+        localStorage.getItem(
+            "greenpay_balance"
+        ) || 0
+    );
+}
+
+
+function money(n){
+
+    return Number(n).toLocaleString("vi-VN")+" ₫";
+}
+
+
+function updateBalance(){
+
+    const value=money(getBalance());
+
+    document.getElementById("balance").textContent=value;
+    document.getElementById("manageBalance").textContent=value;
+    document.getElementById("transferBalance").textContent=value;
+}
+
+
+/* PAGE */
+
+function hidePages(){
+
+    document
+        .querySelectorAll(".page")
+        .forEach(page=>{
+            page.classList.remove("active");
+        });
+}
+
+
+function openManage(){
+
+    hidePages();
+
+    document
+        .getElementById("managePage")
+        .classList.add("active");
+
+    updateBalance();
+}
+
+
+function openTransfer(){
+
+    hidePages();
+
+    document
+        .getElementById("transferPage")
+        .classList.add("active");
+
+    updateBalance();
+}
+
+
+function goHome(){
+
+    hidePages();
+
+    document
+        .getElementById("homePage")
+        .classList.add("active");
+
+    updateBalance();
+}
+
+
+function scrollHistory(){
+
+    goHome();
+
+    setTimeout(()=>{
+
+        document
+            .getElementById("history")
+            .scrollIntoView({
+                behavior:"smooth"
+            });
+
+    },50);
+}
+
+
+/* ADD / SUBTRACT MODAL */
+
+function openModal(t){
+
+    type=t;
+
+    document
+        .getElementById("modal")
+        .style.display="flex";
+
+    document
+        .getElementById("modalTitle")
+        .textContent =
+        t==="add"
+        ? "➕ Cộng tiền"
+        : "➖ Trừ tiền";
+
+    document.getElementById("amount").value="";
+    document.getElementById("note").value="";
+
+    document.getElementById("amount").focus();
+}
+
+
+function closeModal(){
+
+    document
+        .getElementById("modal")
+        .style.display="none";
+}
+
+
+/* PROCESS ADD / SUBTRACT */
+
+function process(){
+
+    const amount =
+        Number(
+            document
+            .getElementById("amount")
+            .value
+        );
+
+    const note =
+        document
+        .getElementById("note")
+        .value.trim()
+        || "Giao dịch";
+
+
+    if(!amount || amount<=0){
+
+        toast(
+            "⚠️ Số tiền không hợp lệ",
+            "Nhập số tiền lớn hơn 0."
+        );
+
+        return;
+    }
+
+
+    let balance=getBalance();
+
+
+    if(type==="subtract"){
+
+        if(amount>balance){
+
+            toast(
+                "❌ Không đủ số dư",
+                "Số dư hiện tại không đủ."
+            );
+
+            return;
+        }
+
+        balance-=amount;
+
+    }else{
+
+        balance+=amount;
+
+    }
+
+
+    localStorage.setItem(
+        "greenpay_balance",
+        balance
+    );
+
+
+    const list =
+        JSON.parse(
+            localStorage.getItem(
+                "greenpay_transactions"
+            ) || "[]"
+        );
+
+
+    list.unshift({
+
+        type:type,
+        amount:amount,
+        note:note,
+        time:new Date().toISOString()
+
+    });
+
+
+    localStorage.setItem(
+        "greenpay_transactions",
+        JSON.stringify(list)
+    );
+
+
+    closeModal();
+
+    updateBalance();
+    render();
+
+
+    toast(
+        type==="add"
+        ? "💚 Đã cộng tiền"
+        : "💸 Đã trừ tiền",
+
+        (type==="add" ? "+" : "-")
+        + money(amount)
+    );
+}
+
+
+/* TRANSFER */
+
+function openTransferConfirm(){
+
+    const name =
+        document
+        .getElementById("recipientName")
+        .value.trim();
+
+    const account =
+        document
+        .getElementById("recipientAccount")
+        .value.trim();
+
+    const amount =
+        Number(
+            document
+            .getElementById("transferAmount")
+            .value
+        );
+
+    const note =
+        document
+        .getElementById("transferNote")
+        .value.trim()
+        || "Chuyển tiền";
+
+
+    if(!name){
+
+        toast(
+            "⚠️ Thiếu tên",
+            "Hãy nhập tên người nhận."
+        );
+
+        return;
+    }
+
+
+    if(!account){
+
+        toast(
+            "⚠️ Thiếu số tài khoản",
+            "Hãy nhập số tài khoản người nhận."
+        );
+
+        return;
+    }
+
+
+    if(!/^[0-9]+$/.test(account)){
+
+        toast(
+            "⚠️ Số tài khoản không hợp lệ",
+            "Số tài khoản chỉ được chứa chữ số."
+        );
+
+        return;
+    }
+
+
+    if(!amount || amount<=0){
+
+        toast(
+            "⚠️ Số tiền không hợp lệ",
+            "Nhập số tiền lớn hơn 0."
+        );
+
+        return;
+    }
+
+
+    if(amount>getBalance()){
+
+        toast(
+            "❌ Không đủ số dư",
+            "Số dư hiện tại không đủ để chuyển."
+        );
+
+        return;
+    }
+
+
+    document
+        .getElementById("transferConfirmText")
+        .innerHTML=`
+
+            <div>
+                <b>Người nhận:</b>
+                ${escapeHTML(name)}
+            </div>
+
+            <div>
+                <b>Số tài khoản:</b>
+                ${escapeHTML(account)}
+            </div>
+
+            <div>
+                <b>Số tiền:</b>
+                <span style="color:#39915a;font-weight:bold">
+                    ${money(amount)}
+                </span>
+            </div>
+
+            <div>
+                <b>Nội dung:</b>
+                ${escapeHTML(note)}
+            </div>
+
+        `;
+
+
+    document
+        .getElementById("transferConfirmModal")
+        .style.display="flex";
+}
+
+
+function closeTransferConfirm(){
+
+    document
+        .getElementById("transferConfirmModal")
+        .style.display="none";
+}
+
+
+function processTransfer(){
+
+    const name =
+        document
+        .getElementById("recipientName")
+        .value.trim();
+
+    const account =
+        document
+        .getElementById("recipientAccount")
+        .value.trim();
+
+    const amount =
+        Number(
+            document
+            .getElementById("transferAmount")
+            .value
+        );
+
+    const note =
+        document
+        .getElementById("transferNote")
+        .value.trim()
+        || "Chuyển tiền";
+
+
+    if(!name || !account || !amount){
+
+        closeTransferConfirm();
+
+        toast(
+            "⚠️ Thiếu thông tin",
+            "Vui lòng kiểm tra lại thông tin chuyển tiền."
+        );
+
+        return;
+    }
+
+
+    let balance=getBalance();
+
+
+    if(amount>balance){
+
+        closeTransferConfirm();
+
+        toast(
+            "❌ Không đủ số dư",
+            "Số dư hiện tại không đủ."
+        );
+
+        return;
+    }
+
+
+    balance-=amount;
+
+
+    localStorage.setItem(
+        "greenpay_balance",
+        balance
+    );
+
+
+    const list =
+        JSON.parse(
+            localStorage.getItem(
+                "greenpay_transactions"
+            ) || "[]"
+        );
+
+
+    list.unshift({
+
+        type:"transfer",
+
+        amount:amount,
+
+        note:note,
+
+        recipient:name,
+
+        recipientAccount:account,
+
+        time:new Date().toISOString()
+
+    });
+
+
+    localStorage.setItem(
+        "greenpay_transactions",
+        JSON.stringify(list)
+    );
+
+
+    closeTransferConfirm();
+
+
+    document.getElementById("recipientName").value="";
+    document.getElementById("recipientAccount").value="";
+    document.getElementById("transferAmount").value="";
+    document.getElementById("transferNote").value="";
+
+
+    updateBalance();
+    render();
+
+
+    toast(
+        "✅ Chuyển tiền thành công",
+        "Đã chuyển "+money(amount)+" cho "+name
+    );
+
+
+    setTimeout(()=>{
+        goHome();
+    },500);
+}
+
+
+/* HISTORY */
+
+function render(){
+
+    const box =
+        document.getElementById("transactions");
+
+    const list =
+        JSON.parse(
+            localStorage.getItem(
+                "greenpay_transactions"
+            ) || "[]"
+        );
+
+
+    if(!list.length){
+
+        box.innerHTML=`
+
+            <div class="empty">
+
+                📊
+                <br><br>
+                Chưa có biến động số dư
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    box.innerHTML =
+        list.map(t=>{
+
+            const add=t.type==="add";
+            const transfer=t.type==="transfer";
+
+            const date =
+                new Date(t.time)
+                .toLocaleString("vi-VN");
+
+
+            let icon="";
+
+            if(add){
+                icon="↓";
+            }else if(transfer){
+                icon="↗";
+            }else{
+                icon="↑";
+            }
+
+
+            let title="";
+
+            if(add){
+
+                title=t.note;
+
+            }else if(transfer){
+
+                title=
+                    "Chuyển cho "
+                    + escapeHTML(t.recipient);
+
+            }else{
+
+                title=t.note;
+
+            }
+
+
+            return `
+
+                <div class="transaction">
+
+                    <div class="left">
+
+                        <div class="
+                            icon
+                            ${add ? "in":"out"}
+                        ">
+
+                            ${icon}
+
+                        </div>
+
+                        <div>
+
+                            <div class="note">
+                                ${title}
+                            </div>
+
+                            ${
+                                transfer
+                                ? `
+                                    <div class="time">
+                                        STK:
+                                        ${escapeHTML(
+                                            t.recipientAccount
+                                        )}
+                                    </div>
+                                  `
+                                : ""
+                            }
+
+                            <div class="time">
+                                ${date}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="${
+                        add ? "plus":"minus"
+                    }">
+
+                        ${add ? "+":"-"}
+                        ${money(t.amount)}
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }).join("");
+}
+
+
+/* CLEAR */
+
+function clearHistory(){
+
+    if(!confirm(
+        "Xóa toàn bộ lịch sử biến động?"
+    )) return;
+
+
+    localStorage.setItem(
+        "greenpay_transactions",
+        "[]"
+    );
+
+
+    render();
+
+
+    toast(
+        "🗑️ Đã xóa",
+        "Lịch sử biến động đã được xóa."
+    );
+}
+
+
+/* TOAST */
+
+function toast(title,message){
+
+    const box =
+        document.getElementById("toastBox");
+
+    const item =
+        document.createElement("div");
+
+    item.className="toast";
+
+    item.innerHTML=`
+
+        <strong>
+            ${escapeHTML(title)}
+        </strong>
+
+        <small>
+            ${escapeHTML(message)}
+        </small>
+
+    `;
+
+
+    box.appendChild(item);
+
+
+    setTimeout(()=>{
+
+        item.style.opacity="0";
+
+        item.style.transform=
+            "translateX(100px)";
+
+
+        setTimeout(()=>{
+            item.remove();
+        },300);
+
+    },3000);
+}
+
+
+/* ESCAPE */
+
+function escapeHTML(text){
+
+    return String(text)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+
+/* LOGOUT */
+
+function logout(){
+
+    localStorage.removeItem(
+        "greenpay_user"
+    );
+
+    location.reload();
+}
+
+
+/* AUTO LOGIN */
+
+window.onload=function(){
+
+    const user =
+        localStorage.getItem(
+            "greenpay_user"
+        );
+
+    if(user){
+
+        currentUser=user;
+
+        showApp();
+    }
+};
+
+
+/* ENTER LOGIN */
+
+document
+    .getElementById("nameInput")
+    .addEventListener(
+        "keydown",
+        function(e){
+
+            if(e.key==="Enter"){
+                login();
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+</html>
