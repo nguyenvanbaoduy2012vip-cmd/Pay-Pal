@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>GreenPay</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Arial,sans-serif;
+  background:#f4f7f5;
+  color:#17231d;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+
+.app{
+  max-width:480px;
+  min-height:100vh;
+  margin:auto;
+  background:#fff;
+}
+
+header{
+  padding:20px;
+  background:linear-gradient(135deg,#00a86b,#087f52);
+  color:white;
+}
+
+.logo{
+  font-size:25px;
+  font-weight:800;
+}
+
+.page{padding:20px}
+
+.card{
+  background:white;
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:16px;
+  box-shadow:0 5px 20px #0000000d;
+}
+
+.balance{
+  background:linear-gradient(135deg,#00a86b,#087f52);
+  color:white;
+}
+
+.balance small{opacity:.8}
+.balance h1{
+  margin-top:8px;
+  font-size:32px;
+}
+
+.stk{
+  margin-top:12px;
+  font-size:14px;
+  opacity:.9;
+}
+
+input{
+  width:100%;
+  padding:14px;
+  border:1px solid #dce4df;
+  border-radius:12px;
+  outline:none;
+  margin:7px 0 13px;
+}
+
+input:focus{border-color:#00a86b}
+
+.btn{
+  width:100%;
+  border:0;
+  padding:14px;
+  border-radius:12px;
+  background:#00a86b;
+  color:white;
+  font-weight:bold;
+}
+
+.btn.secondary{
+  background:#e9f7f1;
+  color:#087f52;
+}
+
+.btn.red{background:#e94b4b}
+
+.tabs{
+  display:flex;
+  gap:8px;
+  margin-bottom:18px;
+}
+
+.tab{
+  flex:1;
+  padding:12px;
+  border:0;
+  border-radius:10px;
+  background:#eef2ef;
+}
+
+.tab.active{
+  background:#00a86b;
+  color:white;
+}
+
+.hidden{display:none!important}
+
+.menu{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.menu button{
+  border:0;
+  padding:18px 10px;
+  border-radius:15px;
+  background:#f0f8f4;
+  color:#087f52;
+  font-weight:bold;
+}
+
+.history-item{
+  padding:13px 0;
+  border-bottom:1px solid #edf0ee;
+}
+
+.history-item:last-child{border-bottom:0}
+
+.plus{color:#00a86b}
+.minus{color:#e04b4b}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+}
+
+.back{
+  border:0;
+  background:#eef3f0;
+  padding:9px 13px;
+  border-radius:10px;
+}
+
+.auth{
+  min-height:100vh;
+  padding:25px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#e9fff5,#f6fffa);
+}
+
+.auth-box{
+  width:100%;
+  max-width:400px;
+}
+
+.auth-logo{
+  text-align:center;
+  color:#00a86b;
+  font-size:36px;
+  font-weight:900;
+  margin-bottom:25px;
+}
+
+.switch{
+  text-align:center;
+  margin-top:15px;
+  color:#087f52;
+  cursor:pointer;
+}
+
+.note{
+  font-size:13px;
+  color:#6d7972;
+  line-height:1.5;
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:25px;
+  transform:translateX(-50%);
+  background:#17231d;
+  color:white;
+  padding:13px 18px;
+  border-radius:12px;
+  display:none;
+  z-index:99;
+}
+</style>
+</head>
+
+<body>
+
+<!-- AUTH -->
+<div id="auth" class="auth">
+  <div class="auth-box">
+
+    <div class="auth-logo">GreenPay</div>
+
+    <div class="card">
+
+      <div class="tabs">
+        <button id="loginTab" class="tab active" onclick="showLogin()">Đăng nhập</button>
+        <button id="registerTab" class="tab" onclick="showRegister()">Đăng ký</button>
+      </div>
+
+      <div id="loginForm">
+        <input id="loginName" placeholder="Tên tài khoản">
+        <input id="loginPass" type="password" placeholder="Mật khẩu">
+
+        <button class="btn" onclick="login()">Đăng nhập</button>
+
+        <p class="switch" onclick="showRegister()">
+          Chưa có tài khoản? Đăng ký
+        </p>
+      </div>
+
+      <div id="registerForm" class="hidden">
+        <input id="regName" placeholder="Tên tài khoản">
+        <input id="regPass" type="password" placeholder="Mật khẩu">
+
+        <button class="btn" onclick="register()">Tạo tài khoản</button>
+
+        <p class="switch" onclick="showLogin()">
+          Đã có tài khoản? Đăng nhập
+        </p>
+      </div>
+
+      <br>
+
+      <p class="note">
+        GreenPay sử dụng tài khoản nội bộ. Mỗi tài khoản sẽ được cấp
+        một số tài khoản riêng.
+      </p>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- APP -->
+<div id="app" class="app hidden">
+
+<header>
+  <div class="logo">GreenPay</div>
+</header>
+
+<div id="homePage" class="page">
+
+  <div class="card balance">
+    <small>Số dư</small>
+    <h1 id="balance">0 ₫</h1>
+    <div class="stk">
+      STK: <b id="myStk"></b>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 id="welcome">Xin chào</h3>
+    <br>
+
+    <div class="menu">
+      <button onclick="openTransfer()">💸<br>Chuyển tiền</button>
+      <button onclick="openHistory()">📜<br>Lịch sử</button>
+      <button onclick="openAccount()">👤<br>Tài khoản</button>
+      <button onclick="logout()">🚪<br>Đăng xuất</button>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- TRANSFER -->
+<div id="transferPage" class="page hidden">
+
+  <div class="top">
+    <h2>Chuyển tiền</h2>
+    <button class="back" onclick="goHome()">Quay lại</button>
+  </div>
+
+  <div class="card">
+
+    <label>Tên người nhận</label>
+    <input id="receiverName" placeholder="Tên người nhận">
+
+    <label>Số tài khoản người nhận</label>
+    <input id="receiverStk" inputmode="numeric" placeholder="Nhập STK">
+
+    <label>Số tiền</label>
+    <input id="transferAmount" type="number" min="1" placeholder="0">
+
+    <label>Nội dung</label>
+    <input id="transferNote" placeholder="Nội dung chuyển tiền">
+
+    <button class="btn" onclick="transfer()">
+      Chuyển tiền
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- HISTORY -->
+<div id="historyPage" class="page hidden">
+
+  <div class="top">
+    <h2>Lịch sử</h2>
+    <button class="back" onclick="goHome()">Quay lại</button>
+  </div>
+
+  <div class="card" id="historyList"></div>
+
+</div>
+
+
+<!-- ACCOUNT -->
+<div id="accountPage" class="page hidden">
+
+  <div class="top">
+    <h2>Tài khoản</h2>
+    <button class="back" onclick="goHome()">Quay lại</button>
+  </div>
+
+  <div class="card">
+
+    <p>Tên tài khoản</p>
+    <h3 id="accountName"></h3>
+
+    <br>
+
+    <p>Số tài khoản</p>
+    <h3 id="accountStk"></h3>
+
+    <br>
+
+    <p>Số dư</p>
+    <h3 id="accountBalance"></h3>
+
+  </div>
+
+  <div class="card">
+
+    <h3>Quản lý số dư</h3>
+    <br>
+
+    <input id="moneyAmount" type="number" min="1" placeholder="Số tiền">
+
+    <button class="btn" onclick="addMoney()">
+      + Cộng tiền
+    </button>
+
+    <br><br>
+
+    <button class="btn red" onclick="removeMoney()">
+      − Trừ tiền
+    </button>
+
+  </div>
+
+</div>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+
+let accounts = JSON.parse(localStorage.getItem("greenpay_accounts") || "{}");
+let currentUser = localStorage.getItem("greenpay_current");
+
+function save(){
+  localStorage.setItem("greenpay_accounts",JSON.stringify(accounts));
+}
+
+function money(n){
+  return Number(n).toLocaleString("vi-VN") + " ₫";
+}
+
+function toast(text){
+  const t=document.getElementById("toast");
+  t.textContent=text;
+  t.style.display="block";
+
+  setTimeout(()=>{
+    t.style.display="none";
+  },2200);
+}
+
+function showLogin(){
+
+  loginForm.classList.remove("hidden");
+  registerForm.classList.add("hidden");
+
+  loginTab.classList.add("active");
+  registerTab.classList.remove("active");
+}
+
+function showRegister(){
+
+  loginForm.classList.add("hidden");
+  registerForm.classList.remove("hidden");
+
+  loginTab.classList.remove("active");
+  registerTab.classList.add("active");
+}
+
+function generateStk(){
+
+  let stk;
+
+  do{
+    stk = "";
+
+    for(let i=0;i<10;i++){
+      stk += Math.floor(Math.random()*10);
+    }
+
+  }while(Object.values(accounts).some(a=>a.stk===stk));
+
+  return stk;
+}
+
+function register(){
+
+  const name=document.getElementById("regName").value.trim();
+  const pass=document.getElementById("regPass").value;
+
+  if(name.length<3){
+    toast("Tên phải có ít nhất 3 ký tự");
+    return;
+  }
+
+  if(pass.length<4){
+    toast("Mật khẩu phải có ít nhất 4 ký tự");
+    return;
+  }
+
+  const key=name.toLowerCase();
+
+  if(accounts[key]){
+    toast("Tên tài khoản đã tồn tại");
+    return;
+  }
+
+  accounts[key]={
+    name:name,
+    password:pass,
+    stk:generateStk(),
+    balance:0,
+    history:[]
+  };
+
+  save();
+
+  document.getElementById("regName").value="";
+  document.getElementById("regPass").value="";
+
+  showLogin();
+
+  toast("Tạo tài khoản thành công");
+}
+
+function login(){
+
+  const name=document.getElementById("loginName").value.trim();
+  const pass=document.getElementById("loginPass").value;
+
+  const key=name.toLowerCase();
+  const user=accounts[key];
+
+  if(!user || user.password!==pass){
+    toast("Sai tên tài khoản hoặc mật khẩu");
+    return;
+  }
+
+  currentUser=key;
+  localStorage.setItem("greenpay_current",key);
+
+  openApp();
+
+  toast("Đăng nhập thành công");
+}
+
+function openApp(){
+
+  auth.classList.add("hidden");
+  app.classList.remove("hidden");
+
+  goHome();
+  updateUI();
+}
+
+function updateUI(){
+
+  if(!currentUser || !accounts[currentUser]) return;
+
+  const user=accounts[currentUser];
+
+  balance.textContent=money(user.balance);
+  myStk.textContent=user.stk;
+  welcome.textContent="Xin chào, "+user.name;
+
+  accountName.textContent=user.name;
+  accountStk.textContent=user.stk;
+  accountBalance.textContent=money(user.balance);
+}
+
+function hidePages(){
+
+  homePage.classList.add("hidden");
+  transferPage.classList.add("hidden");
+  historyPage.classList.add("hidden");
+  accountPage.classList.add("hidden");
+}
+
+function goHome(){
+
+  hidePages();
+  homePage.classList.remove("hidden");
+  updateUI();
+}
+
+function openTransfer(){
+
+  hidePages();
+  transferPage.classList.remove("hidden");
+}
+
+function openHistory(){
+
+  hidePages();
+  historyPage.classList.remove("hidden");
+
+  const list=document.getElementById("historyList");
+  const history=accounts[currentUser].history;
+
+  if(history.length===0){
+    list.innerHTML="<p class='note'>Chưa có giao dịch.</p>";
+    return;
+  }
+
+  list.innerHTML=history.slice().reverse().map(h=>`
+
+    <div class="history-item">
+
+      <div>
+        <b>${h.title}</b>
+      </div>
+
+      <div class="${h.type}">
+        ${h.type==="plus"?"+":"-"} ${money(h.amount)}
+      </div>
+
+      <small>${h.note || ""}</small><br>
+      <small>${h.time}</small>
+
+    </div>
+
+  `).join("");
+}
+
+function openAccount(){
+
+  hidePages();
+  accountPage.classList.remove("hidden");
+  updateUI();
+}
+
+function findAccountByStk(stk){
+
+  return Object.values(accounts).find(a=>a.stk===stk);
+}
+
+function transfer(){
+
+  const receiverName=document.getElementById("receiverName").value.trim();
+  const receiverStk=document.getElementById("receiverStk").value.trim();
+  const amount=Number(document.getElementById("transferAmount").value);
+  const note=document.getElementById("transferNote").value.trim();
+
+  const sender=accounts[currentUser];
+  const receiver=findAccountByStk(receiverStk);
+
+  if(!receiverName || !receiverStk || !amount){
+    toast("Vui lòng nhập đầy đủ thông tin");
+    return;
+  }
+
+  if(amount<=0){
+    toast("Số tiền không hợp lệ");
+    return;
+  }
+
+  if(receiverStk===sender.stk){
+    toast("Không thể chuyển cho chính mình");
+    return;
+  }
+
+  if(!receiver){
+    toast("Không tìm thấy STK người nhận");
+    return;
+  }
+
+  if(receiver.name.toLowerCase()!==receiverName.toLowerCase()){
+    toast("Tên người nhận không khớp với STK");
+    return;
+  }
+
+  if(sender.balance<amount){
+    toast("Số dư không đủ");
+    return;
+  }
+
+  const time=new Date().toLocaleString("vi-VN");
+
+  sender.balance-=amount;
+  receiver.balance+=amount;
+
+  sender.history.push({
+    title:"Chuyển tiền → "+receiver.name,
+    amount:amount,
+    type:"minus",
+    note:note || "Chuyển tiền",
+    time:time
+  });
+
+  receiver.history.push({
+    title:"Nhận tiền ← "+sender.name,
+    amount:amount,
+    type:"plus",
+    note:note || "Nhận tiền",
+    time:time
+  });
+
+  save();
+  updateUI();
+
+  document.getElementById("receiverName").value="";
+  document.getElementById("receiverStk").value="";
+  document.getElementById("transferAmount").value="";
+  document.getElementById("transferNote").value="";
+
+  toast("Chuyển tiền thành công");
+}
+
+function addMoney(){
+
+  const amount=Number(document.getElementById("moneyAmount").value);
+
+  if(!amount || amount<=0){
+    toast("Nhập số tiền hợp lệ");
+    return;
+  }
+
+  const user=accounts[currentUser];
+
+  user.balance+=amount;
+
+  user.history.push({
+    title:"Cộng tiền",
+    amount:amount,
+    type:"plus",
+    note:"Điều chỉnh số dư",
+    time:new Date().toLocaleString("vi-VN")
+  });
+
+  save();
+  updateUI();
+
+  document.getElementById("moneyAmount").value="";
+
+  toast("Đã cộng tiền");
+}
+
+function removeMoney(){
+
+  const amount=Number(document.getElementById("moneyAmount").value);
+  const user=accounts[currentUser];
+
+  if(!amount || amount<=0){
+    toast("Nhập số tiền hợp lệ");
+    return;
+  }
+
+  if(amount>user.balance){
+    toast("Số dư không đủ");
+    return;
+  }
+
+  user.balance-=amount;
+
+  user.history.push({
+    title:"Trừ tiền",
+    amount:amount,
+    type:"minus",
+    note:"Điều chỉnh số dư",
+    time:new Date().toLocaleString("vi-VN")
+  });
+
+  save();
+  updateUI();
+
+  document.getElementById("moneyAmount").value="";
+
+  toast("Đã trừ tiền");
+}
+
+function logout(){
+
+  localStorage.removeItem("greenpay_current");
+  currentUser=null;
+
+  app.classList.add("hidden");
+  auth.classList.remove("hidden");
+
+  showLogin();
+}
+
+if(currentUser && accounts[currentUser]){
+  openApp();
+}
+
+</script>
+
+</body>
+</html>
